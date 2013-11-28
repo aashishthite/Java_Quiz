@@ -51,6 +51,7 @@ public class PhoneBookUIPanel extends JPanel
 				switch(communication.currentData)
 				{
 					case 3:
+						
 						break;
 					case 4:						
 						if(dataRequested)
@@ -68,8 +69,14 @@ public class PhoneBookUIPanel extends JPanel
 						}
 						break;
 					case 6:
+						if(dataRequested)
+						{							
+							JOptionPane.showMessageDialog(inputPanel, "Contact not found.");
+							dataRequested = false;
+						}
 						break;
 					default:
+						
 						break;							
 				}			
 				communication.dataReceived=false;
@@ -92,7 +99,8 @@ public class PhoneBookUIPanel extends JPanel
     {      	 	
     	communication.requestSearch2Server(e);
     	dataRequested=true;    	
-    	tableModel = new DefaultTableModel(null,new Object[] {"Name", "Phone"});    	
+    	tableModel = new DefaultTableModel(null,new Object[] {"Name", "Phone"});    
+    	resultsTable.setModel(tableModel);
     }
     /**
      * 

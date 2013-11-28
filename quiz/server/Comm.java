@@ -230,11 +230,9 @@ public class Comm implements Runnable {
     	while(true)
     	{	    	
 			try 
-			{
-				
+			{				
 				 DatagramPacket receivePacket = new DatagramPacket(rx_buff, rx_buff.length);
-				 serverReceiver.receive(receivePacket);
-				 
+				 serverReceiver.receive(receivePacket);				 
 		    	 rx_buff = receivePacket.getData();
 		    	 IPAddressOfCurrentClient =receivePacket.getAddress();
 		    	 PortofCurrentClient = receivePacket.getPort();

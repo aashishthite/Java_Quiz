@@ -23,13 +23,14 @@ public class PhoneBookServerUI extends JPanel
 	protected Comm communication;
 	Timer timer;
 	int index2Send;	
+	DBMan dbManager = null;
 	/**
 	 * 
 	 */
 	public PhoneBookServerUI()
 	{
 		init();
-		entries=new LinkedList<Entry>();
+		dbManager = new DBMan();
         communication = new Comm();
         timer = new Timer(100, timerEventHandler);
         timer.setRepeats(true);
@@ -49,18 +50,28 @@ public class PhoneBookServerUI extends JPanel
 				switch(communication.currentData)
 				{
 					case 1:
-						entries.add(new Entry(communication.receivedEntry.name,communication.receivedEntry.phoneNum));
-						countLabel.setText(((Integer)entries.size()).toString());
+						dbManager.addEntry2DB(new Entry(communication.receivedEntry.name,communication.receivedEntry.phoneNum));
+						//countLabel.setText(((Integer)entries.size()).toString());
 						break;					
 					case 2:	
 						index2Send = 0;
-						communication.sendEntry2Client(entries.get(index2Send));						
+						entries = dbManager.SearchEntry(communication.receivedEntry);
+						if(entries.size()>0)
+						{	
+							communication.sendEntry2Client(entries.get(index2Send));
+						}
+						else if(entries.size()==1)
+						{
+							communication.sendLastEntry2Client(entries.get(0));
+						}
+						else
+							communication.sendErr2Client(new Entry(communication.receivedEntry.name,communication.receivedEntry.phoneNum));
 						break;
 					case 3:
 						index2Send++;
 						if(index2Send < entries.size()-1)
 							communication.sendEntry2Client(entries.get(index2Send));
-						else
+						else if(entries.size()>1)
 							communication.sendLastEntry2Client(entries.get(entries.size()-1));
 						break;
 					default:

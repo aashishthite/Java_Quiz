@@ -57,7 +57,8 @@ public class PhoneBookServerUI extends JPanel
 				{
 					case 1:
 						dbManager.addEntry2DB(new Entry(communication.receivedEntry.name,communication.receivedEntry.phoneNum));
-						countLabel.setText(((Integer)dbSize++).toString());
+						++dbSize;
+						countLabel.setText(((Integer)dbSize).toString());
 						break;					
 					case 2:	
 						index2Send = 0;
@@ -88,7 +89,7 @@ public class PhoneBookServerUI extends JPanel
 		}
     };
     /**
-     * 
+     * Initialize GUI components
      */
 	private void init()
 	{

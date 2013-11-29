@@ -1,17 +1,16 @@
 package quiz.client;
-import java.util.*;
 /**
- * 
+ * Class to represent an Entry in a PhoneBook
  * @author aashish
  *
  */
 public class Entry {
-	String name;
-	String phoneNum;
+	protected String name;
+	protected String phoneNum;
 	/**
-	 * 
-	 * @param name
-	 * @param phoneNum
+	 * Constructor
+	 * @param name name field of the entry
+	 * @param phoneNum number field of the entry
 	 */
 	public Entry(String name, String phoneNum)
 	{

@@ -8,7 +8,7 @@ import javax.swing.*;
 public class PhoneBookApp {
 
 	/**
-	 * 
+	 * Entry point to the client app
 	 * @param args
 	 */
     public static void main(String[] args) {

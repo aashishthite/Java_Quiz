@@ -131,7 +131,7 @@ public class InputPanel extends JPanel
             	 String name = nameField.getText().trim();
                  String number = phoneField.getText().trim();
                  
-                 if(!name.equals("") || !number.equals(""))
+                 if(true/*!name.equals("") || !number.equals("")*/)
                  {
                 	 
                 	 if(name.length()<120)

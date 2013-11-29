@@ -1,15 +1,26 @@
 package quiz.server;
 import java.sql.*;
 import java.util.*;
-public class DBMan {
-	Connection dbConn = null;
-	
-	
+/**
+ * Database manager class
+ * Uses H2 in-memory database
+ * @author aashish
+ *
+ */
+public class DBMan 
+{
+	Connection dbConn = null;	
+	/**
+	 * Constructor
+	 */
     public DBMan()
     {
     	this.getDBConnection();
     }
-    
+    /**
+     * Gets connection to the database
+     * Initializes Tables
+     */
     private void getDBConnection()
     {
             // JDBC connection to the database
@@ -52,7 +63,7 @@ public class DBMan {
     }
     /**
      * Important to close the database connection, so that database resources are not tied up.
-     * @param dbConn        JDBC connection to the database
+     * H2 is an inMemory database so the connection is closed when application is exit.     
      */
     private void closeDBConnection()
     {
@@ -67,6 +78,10 @@ public class DBMan {
                     e.printStackTrace();
             }
     }
+    /**
+     * Adds entry to the database
+     * @param e Entry data to be added to the database
+     */
     public void addEntry2DB(Entry e)
     {
     	 Statement stmt = null;
@@ -82,12 +97,18 @@ public class DBMan {
 		}
     	
     }
+    /**
+     * Search for a similar entry in the database
+     * @param e Entries similar to this parameter are searched in database
+     * @return returns a list of entries that are similar to the entry searched for
+     */
     public List<Entry> SearchEntry(Entry e)
     {
     	List<Entry> resultList = new ArrayList<Entry>();
     	PreparedStatement prep = null;
     	try 
     	{
+    		//Ensure search to be case insensitive
 			prep = dbConn.prepareStatement("SELECT * FROM PHONEBOOK WHERE UPPER(NAME) LIKE UPPER('%"+e.name+"%') AND NUMBER LIKE '%" + e.phoneNum +"%'");
 			ResultSet rs = prep.executeQuery();
 			while(rs.next()) 

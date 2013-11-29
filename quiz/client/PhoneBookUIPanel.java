@@ -4,12 +4,12 @@ import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
+import quiz.Common.Entry;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.*;
+
+
 /**
  * This class is used to create GUI and handle the GUI events for the
  * Phone-book client Application. 
@@ -33,7 +33,7 @@ public class PhoneBookUIPanel extends JPanel
     public PhoneBookUIPanel() 
     {
         init();        
-        communication = new Comm();
+        communication = new Comm("localhost");
         timer = new Timer(100, timerEventHandler);
         timer.setRepeats(true);
         timer.start();

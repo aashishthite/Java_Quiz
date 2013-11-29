@@ -1,5 +1,4 @@
 package quiz.client;
-
 import javax.swing.*;
 /**
  * Main class for the Phone-book client application

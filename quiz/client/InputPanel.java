@@ -1,8 +1,6 @@
 package quiz.client;
-import java.util.*;
-import java.util.List;
-import java.util.*;
 import javax.swing.*;
+import quiz.Common.Entry;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;

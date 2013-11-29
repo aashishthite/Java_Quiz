@@ -11,7 +11,8 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.*;
 /**
- * 
+ * This class is used to create GUI and handle the GUI events for the
+ * Phone-book client Application. 
  * @author aashish
  *
  */
@@ -23,10 +24,11 @@ public class PhoneBookUIPanel extends JPanel
     protected JTable resultsTable;
     protected DefaultTableModel tableModel;
     protected Comm communication;
-    Timer timer;
+    protected Timer timer;
     boolean dataRequested;
     /**
-     * 
+     * Constructor
+     * Initializes GUI, Communication thread and timers
      */
     public PhoneBookUIPanel() 
     {
@@ -39,7 +41,8 @@ public class PhoneBookUIPanel extends JPanel
         
     }
     /**
-     * 
+     * Event-handler for timer event.
+     * At every timer event, it checks if data is received and takes actions accordingly
      */
     ActionListener timerEventHandler = new ActionListener()
     {    
@@ -50,17 +53,17 @@ public class PhoneBookUIPanel extends JPanel
 			{				
 				switch(communication.currentData)
 				{
-					case 3:
+					case 3://Acknowledgement
 						
 						break;
-					case 4:						
+					case 4://Received entry						
 						if(dataRequested)
 						{
 							tableModel.addRow(new Object[]{communication.receivedEntry.name,communication.receivedEntry.phoneNum});				
 							communication.sendAck2Server(true);							
 						}						
 						break;
-					case 5:
+					case 5://Received last entry
 						if(dataRequested)
 						{
 							tableModel.addRow(new Object[]{communication.receivedEntry.name,communication.receivedEntry.phoneNum});
@@ -68,15 +71,14 @@ public class PhoneBookUIPanel extends JPanel
 							dataRequested = false;
 						}
 						break;
-					case 6:
+					case 6://error
 						if(dataRequested)
 						{							
 							JOptionPane.showMessageDialog(inputPanel, "Contact not found.");
 							dataRequested = false;
 						}
 						break;
-					default:
-						
+					default:						
 						break;							
 				}			
 				communication.dataReceived=false;
@@ -84,16 +86,17 @@ public class PhoneBookUIPanel extends JPanel
 		}
     };
     /**
-     * 
-     * @param e
+     * Request the server to add an entry to the database
+     * @param e Entry data that should be added to database 
      */
     public void addEntry(Entry e)
     {    	
     	communication.send2AddinServer(e); 
+    	
     }
     /**
-     * 
-     * @param e
+     * Request the server for entries similar to the provided entry
+     * @param e partial or complete entry that should be searched for in database
      */
     public void dispEntries(Entry e)
     {      	 	
@@ -103,7 +106,7 @@ public class PhoneBookUIPanel extends JPanel
     	resultsTable.setModel(tableModel);
     }
     /**
-     * 
+     * Initialize GUI
      */
     protected void init() 
     {

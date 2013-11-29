@@ -2,7 +2,7 @@ package quiz.server;
 import java.io.*;
 import java.net.*;
 /**
- * 
+ * Class that represents the communication protocol between the client and server
  * @author aashish
  *
  */
@@ -20,9 +20,9 @@ class Protocol
 	char checkSum;
 	byte[] frame;
 	/**
-	 * 
-	 * @param frameType
-	 * @param data
+	 * Constructor
+	 * @param frameType Type of the frame defined by the protocol
+	 * @param data data to be added to data field in the Protocol frame
 	 */
 	public Protocol(int frameType,Data data)
 	{
@@ -38,8 +38,8 @@ class Protocol
 		//add checkSum to frame[299] = 
 	}
 	/**
-	 * 
-	 * @return
+	 * Get the raw byte array for the protocol frame
+	 * @return byte array that stores frame data
 	 */
 	public byte[] getFrame()
 	{
@@ -47,7 +47,7 @@ class Protocol
 	}
 }
 /**
- * 
+ * Abstraction of Data 
  * @author aashish
  *
  */
@@ -55,8 +55,8 @@ abstract class Data
 {
 	byte[] data;
 	/**
-	 * 
-	 * @return
+	 * Get the byte array of the data
+	 * @return byte array of the data
 	 */
 	public byte[] getData()
 	{
@@ -64,7 +64,7 @@ abstract class Data
 	}
 }
 /**
- * 
+ * Data for an error frame
  * @author aashish
  *
  */
@@ -79,15 +79,15 @@ class DataErr extends Data
 	}
 }
 /**
- * 
+ * Data for an Acknowledgement frame
  * @author aashish
  *
  */
 class DataAck extends Data
 {
 	/**
-	 * 
-	 * @param positive
+	 * Create a data byte array representing a positive or a negetive feedback
+	 * @param positive set to true if a positive feedback or false otherwise
 	 */
 	public DataAck(boolean positive)
 	{
@@ -97,6 +97,7 @@ class DataAck extends Data
 	}
 }
 /**
+ * Data for a phone-book entry
  * 
  * @author aashish
  *
@@ -108,9 +109,9 @@ class DataEntry extends Data
 	byte nameSize;
 	byte numSize;
 	/**
-	 * 
-	 * @param name
-	 * @param number
+	 * Create a data frame using given phone-book entry data
+	 * @param name Name data. Cannot exceed 120 bytes
+	 * @param number Number data. Cannot exceed 120 bytes
 	 */
 	public DataEntry(String name, String number)
 	{
@@ -132,7 +133,7 @@ class DataEntry extends Data
 	}
 }
 /**
- * 
+ * Class to handle UDP communication with the server. 
  * @author aashish
  *
  */
@@ -148,7 +149,8 @@ public class Comm implements Runnable {
     InetAddress IPAddressOfCurrentClient;
     int PortofCurrentClient;
     /**
-     * 
+     * Constructor
+     * Starts a new thread for receiver.
      */
     public Comm()
     {
@@ -165,8 +167,8 @@ public class Comm implements Runnable {
     }
  
     /**
-     * 
-     * @param e
+     * Send the entry data to the client for displaying on table in GUI
+     * @param e Entry data
      */
     public void sendEntry2Client(Entry e)
     {
@@ -175,8 +177,8 @@ public class Comm implements Runnable {
     	sendData2Client(protocol.getFrame());
     }
     /**
-     * 
-     * @param e
+     * Send the last entry data to be sent to the client for displaying on table in GUI
+     * @param e Entry data
      */
     public void sendLastEntry2Client(Entry e)
     {
@@ -184,10 +186,10 @@ public class Comm implements Runnable {
     	protocol = new Protocol(5,data);
     	sendData2Client(protocol.getFrame());
     }
-   /**
-    * 
-    * @param posNeg
-    */
+    /**
+     * Send a positive or negative acknowledgment to client 
+     * @param posNeg true if positive acknowledgment or false otherwise
+     */
     public void sendAck2Client(boolean posNeg)
     {
     	Data data = new DataAck(posNeg);
@@ -195,8 +197,7 @@ public class Comm implements Runnable {
     	sendData2Client(protocol.getFrame());
     }
     /**
-     * 
-     * @param e
+     * Send an error to client
      */
     public void sendErr2Client(Entry e)
     {
@@ -204,10 +205,10 @@ public class Comm implements Runnable {
     	protocol = new Protocol(6,data);
     	sendData2Client(protocol.getFrame());
     }    
-	/**
-	 *    
-	 * @param data
-	 */
+    /**
+     * Send the frame to client
+     * @param data Data frame or byte array
+     */
     private void sendData2Client(byte[] data) 
     {
     	try
@@ -223,7 +224,7 @@ public class Comm implements Runnable {
     	}
     }
     /**
-     * 
+     * Runs in its own thread to listen to the data sent by the client
      */
     private void receiveDatafromClient()
     {
@@ -260,7 +261,7 @@ public class Comm implements Runnable {
     }
     Thread t;
     /**
-     * 
+     * Starts a thread
      */
 	@Override
 	public void run() 

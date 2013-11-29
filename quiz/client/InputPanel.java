@@ -8,10 +8,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 /**
- * 
+ * This class handles the GUI input to the application
  * @author aashish
  *
  */
+@SuppressWarnings("serial")
 public class InputPanel extends JPanel 
 {
 
@@ -23,8 +24,8 @@ public class InputPanel extends JPanel
     protected JButton searchButton;
     protected PhoneBookUIPanel parent;
     /**
-     * 
-     * @param parent
+     * Constructor
+     * @param parent a reference to the PhoneBookUIPanel class which is the parent of this class
      */
     public InputPanel(JPanel parent) 
     {
@@ -32,7 +33,7 @@ public class InputPanel extends JPanel
         this.parent = (PhoneBookUIPanel) parent; 
     }
     /**
-     * 
+     * Initialize GUI
      */
     protected void init() {
         GridBagLayout layout = new GridBagLayout();
@@ -96,10 +97,8 @@ public class InputPanel extends JPanel
             constraints.ipadx = 10;
             this.add(searchButton, constraints);
         }
-        //Add Listeners
-        /**
-         * 
-         */
+        //Add Listeners to  button events
+        
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
@@ -108,27 +107,42 @@ public class InputPanel extends JPanel
                
                if(!name.equals("") && !number.equals(""))
                {
-            	   parent.addEntry(new Entry(name,number));            	   
+            	   if(name.length()<120)
+            	   {
+            		   if(number.length()<120)
+            			   parent.addEntry(new Entry(name,number)); 
+            		   else
+            			   JOptionPane.showMessageDialog(parent, "Phone number cannot exceed 120 characters.", "Error", JOptionPane.ERROR_MESSAGE);
+            	   }
+            	   else
+            		   JOptionPane.showMessageDialog(parent, "Name cannot exceed 120 characters.", "Error", JOptionPane.ERROR_MESSAGE);
                }
                else
                {
-            	   JOptionPane.showMessageDialog(parent, "Missing fields",
-                           "Error", JOptionPane.ERROR_MESSAGE);
+            	   JOptionPane.showMessageDialog(parent, "Missing fields", "Error", JOptionPane.ERROR_MESSAGE);
                }              
            }
         });
-        /**
-         * 
-         */
+       
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) 
             {
             	 String name = nameField.getText().trim();
                  String number = phoneField.getText().trim();
+                 
                  if(!name.equals("") || !number.equals(""))
                  {
-                	 parent.dispEntries(new Entry(name,number));
+                	 
+                	 if(name.length()<120)
+              	   	 {
+                		 if(number.length()<120)
+                			 parent.dispEntries(new Entry(name,number));
+                		 else
+                			 JOptionPane.showMessageDialog(parent, "Phone number cannot exceed 120 characters.", "Error", JOptionPane.ERROR_MESSAGE);
+              	   	 }
+                	 else
+                		 JOptionPane.showMessageDialog(parent, "Name cannot exceed 120 characters.", "Error", JOptionPane.ERROR_MESSAGE);
                  }          	
             }
         });

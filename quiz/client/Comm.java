@@ -2,7 +2,7 @@ package quiz.client;
 import java.io.*;
 import java.net.*;
 /**
- * 
+ * Class that represents the communication protocol between the client and server
  * @author aashish
  *
  */
@@ -19,11 +19,11 @@ class Protocol
 	
 	Data data;
 	char checkSum;
-	byte[] frame;
+	byte[] frame;//300 byte frame
 	/**
-	 * 
-	 * @param frameType
-	 * @param data
+	 * Constructor
+	 * @param frameType Type of the frame defined by the protocol
+	 * @param data data to be added to data field in the Protocol frame
 	 */
 	public Protocol(int frameType,Data data)
 	{
@@ -39,13 +39,17 @@ class Protocol
 		}
 		//add checkSum frame[299] = 
 	}
+	/**
+	 * Get the raw byte array for the protocol frame
+	 * @return byte array that stores frame data
+	 */
 	public byte[] getFrame()
 	{
 		return frame;
 	}
 }
 /**
- * 
+ * Abstraction of Data 
  * @author aashish
  *
  */
@@ -53,8 +57,8 @@ abstract class Data
 {
 	byte[] data;
 	/**
-	 * 
-	 * @return
+	 * Get the byte array of the data
+	 * @return byte array of the data
 	 */
 	public byte[] getData()
 	{
@@ -62,7 +66,7 @@ abstract class Data
 	}
 }
 /**
- * 
+ * Data for an error frame
  * @author aashish
  *
  */
@@ -77,15 +81,15 @@ class DataErr extends Data
 	}
 }
 /**
- * 
+ * Data for an Acknowledgement frame
  * @author aashish
  *
  */
 class DataAck extends Data
 {
 	/**
-	 * 
-	 * @param positive
+	 * Create a data byte array representing a positive or a negetive feedback
+	 * @param positive set to true if a positive feedback or false otherwise
 	 */
 	public DataAck(boolean positive)
 	{
@@ -95,6 +99,7 @@ class DataAck extends Data
 	}
 }
 /**
+ * Data for a phone-book entry
  * 
  * @author aashish
  *
@@ -106,9 +111,9 @@ class DataEntry extends Data
 	byte nameSize;
 	byte numSize;
 	/**
-	 * 
-	 * @param name
-	 * @param number
+	 * Create a data frame using given phone-book entry data
+	 * @param name Name data. Cannot exceed 120 bytes
+	 * @param number Number data. Cannot exceed 120 bytes
 	 */
 	public DataEntry(String name, String number)
 	{
@@ -116,7 +121,8 @@ class DataEntry extends Data
 		 nameSize = (byte) name.length();
 		 numberData = number.toCharArray();
 		 numSize = (byte) number.length();	
-		 data = new byte[nameSize+ numSize +2];
+		 
+		 data = new byte[nameSize+ numSize +2];//nameSize + numSize +2 should be less than 256
 		 data[0]= nameSize;
 		 data[nameSize+1] = numSize;
 		 for(int ii = 0; ii < nameSize; ii++)
@@ -130,7 +136,7 @@ class DataEntry extends Data
 	}
 }
 /**
- * 
+ * Class to handle UDP communication with the server. 
  * @author aashish
  *
  */
@@ -144,23 +150,27 @@ public class Comm implements Runnable {
     DatagramSocket clientReceiver, serverReceiver;
     public Entry receivedEntry;
     /**
-     * 
+     * Constructor
+     * Starts a new thread for receiver.
      */
     public Comm()
     {
-    	try {
+    	try 
+    	{
 			clientReceiver = new DatagramSocket();
 			dataReceived=false;
 			t = new Thread(this,"Comunication Thread");
 			t.start();
-		} catch (SocketException e) {
+		} 
+    	catch (SocketException e)
+		{
 			
 			e.printStackTrace();
 		}
     }
     /**
-     * 
-     * @param e
+     * Send the entry data to the server for adding in the database
+     * @param e Entry data
      */
     public void send2AddinServer(Entry e)
     {
@@ -169,8 +179,8 @@ public class Comm implements Runnable {
     	sendData2Server(protocol.getFrame());
     }
     /**
-     * 
-     * @param e
+     * Send data for entry to be searched in the database
+     * @param e Entry data
      */
     public void requestSearch2Server(Entry e)
     {
@@ -179,8 +189,8 @@ public class Comm implements Runnable {
     	sendData2Server(protocol.getFrame());
     }
     /**
-     *    
-     * @param posNeg
+     * Send a positive or negative acknowledgment to server  
+     * @param posNeg true if positive acknowledgment or false otherwise
      */
     public void sendAck2Server(boolean posNeg)
     {
@@ -189,18 +199,17 @@ public class Comm implements Runnable {
     	sendData2Server(protocol.getFrame());
     }
     /**
-     * 
-     * @param e
+     * Send an error to server
      */
-    public void sendErr2Server(Entry e)
+    public void sendErr2Server()
     {
     	Data data = new DataErr();
     	protocol = new Protocol(6,data);
     	sendData2Server(protocol.getFrame());
     }   
     /**
-     * 
-     * @param data
+     * Send the frame to server
+     * @param data Data frame or byte array
      */
     private void sendData2Server(byte[] data) 
     {
@@ -216,7 +225,7 @@ public class Comm implements Runnable {
     	}
     } 
     /**
-     * 
+     * Runs in its own thread to listen to the data sent by the server
      */
     private void receiveDatafromServer()
     {   	
@@ -250,7 +259,7 @@ public class Comm implements Runnable {
   
     Thread t;
     /**
-     * 
+     * Starts a thread
      */
 	@Override
 	public void run() 

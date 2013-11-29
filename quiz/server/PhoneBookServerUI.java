@@ -10,7 +10,7 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
 /**
- * 
+ * Handles GUI for the server application
  * @author aashish
  *
  */
@@ -23,9 +23,13 @@ public class PhoneBookServerUI extends JPanel
 	protected Comm communication;
 	Timer timer;
 	int index2Send;	
+	int dbSize;
 	DBMan dbManager = null;
 	/**
-	 * 
+	 * Constructor
+	 * Initializes GUI
+	 * Initializes Communication 
+	 * Initializes Timer
 	 */
 	public PhoneBookServerUI()
 	{
@@ -36,10 +40,12 @@ public class PhoneBookServerUI extends JPanel
         timer.setRepeats(true);
         timer.start();
         index2Send =0;
+        dbSize=0;
 	}
-	/**
-	 * 
-	 */
+	 /**
+     * Event-handler for timer event.
+     * At every timer event, it checks if data is received and takes actions accordingly
+     */
 	ActionListener timerEventHandler = new ActionListener()
 	{	    
 		@Override
@@ -51,7 +57,7 @@ public class PhoneBookServerUI extends JPanel
 				{
 					case 1:
 						dbManager.addEntry2DB(new Entry(communication.receivedEntry.name,communication.receivedEntry.phoneNum));
-						//countLabel.setText(((Integer)entries.size()).toString());
+						countLabel.setText(((Integer)dbSize++).toString());
 						break;					
 					case 2:	
 						index2Send = 0;

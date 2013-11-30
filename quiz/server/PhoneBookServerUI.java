@@ -3,6 +3,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
@@ -57,11 +58,28 @@ public class PhoneBookServerUI extends JPanel
 				switch(communication.currentData)
 				{
 				case 1:
-					if(dbManager.addEntry2DB(new Entry(communication.receivedEntry.name,communication.receivedEntry.phoneNum)))
+					try
+					{
+						dbManager.addEntry2DB(new Entry(communication.receivedEntry.name,communication.receivedEntry.phoneNum));
+						++dbSize;
+						countLabel.setText(((Integer)dbSize).toString());
+						communication.sendAck2Client(true);
+					}
+					catch(SQLException e1)
+					{
+						communication.sendAck2Client(false);
+					}
+					/*
+					if()
 					{
 						++dbSize;
 						countLabel.setText(((Integer)dbSize).toString());
-					}						
+						communication.sendAck2Client(true);
+					}
+					else
+					{
+						communication.sendAck2Client(false);
+					}*/
 					break;					
 				case 2:	
 					index2Send = 0;

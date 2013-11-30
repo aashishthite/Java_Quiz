@@ -54,7 +54,19 @@ public class PhoneBookUIPanel extends JPanel
 				switch(communication.currentData)
 				{
 					case 3://Acknowledgement
-						
+						if(dataRequested)
+						{
+							if(communication.ack)
+							{
+								JOptionPane.showMessageDialog(inputPanel, "Contact added successfully.");
+								
+							}
+							else
+							{
+								JOptionPane.showMessageDialog(inputPanel, "Contact already exists in database.");
+							}
+							dataRequested = false;
+						}
 						break;
 					case 4://Received entry						
 						if(dataRequested)
@@ -92,7 +104,7 @@ public class PhoneBookUIPanel extends JPanel
     public void addEntry(Entry e)
     {    	
     	communication.send2AddinServer(e); 
-    	
+    	dataRequested=true;  
     }
     /**
      * Request the server for entries similar to the provided entry

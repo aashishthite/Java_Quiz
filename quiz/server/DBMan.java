@@ -64,6 +64,7 @@ public class DBMan
 	 * Important to close the database connection, so that database resources are not tied up.
 	 * H2 is an inMemory database so the connection is closed when application is exit.     
 	 */
+	@SuppressWarnings("unused")
 	private void closeDBConnection()
 	{
 		try
@@ -80,25 +81,16 @@ public class DBMan
 	/**
 	 * Adds entry to the database
 	 * @param e Entry data to be added to the database
+	 * @throws SQLException 
 	 */
-	public boolean addEntry2DB(Entry e)
+	public void addEntry2DB(Entry e) throws SQLException
 	{
 		PreparedStatement stmt = null;
-		try 
-		{
-			stmt= dbConn.prepareStatement("INSERT INTO phonebook VALUES(?, ?)");
-			stmt.setString(1, e.name);
-			stmt.setString(2, e.phoneNum);
-			stmt.execute();//executeUpdate("INSERT INTO phonebook VALUES('" + e.name + "', '" + e.phoneNum + "')");
-			return true;
-		}
-		catch (SQLException e1) 
-		{
-			//return false;
-			//e1.printStackTrace();
-			//throw new RuntimeException("Insertion failed.");
-		}
-		return false;
+		stmt= dbConn.prepareStatement("INSERT INTO phonebook VALUES(?, ?)");
+		stmt.setString(1, e.name);
+		stmt.setString(2, e.phoneNum);
+		stmt.execute();//executeUpdate("INSERT INTO phonebook VALUES('" + e.name + "', '" + e.phoneNum + "')");
+				
 
 	}
 	/**
@@ -113,7 +105,9 @@ public class DBMan
 		try 
 		{
 			//Ensure search to be case insensitive
-			prep = dbConn.prepareStatement("SELECT * FROM " + TABLE_NAME +" WHERE UPPER(name) LIKE UPPER('%"+e.name+"%') AND NUMBER LIKE '%" + e.phoneNum +"%'");
+			prep = dbConn.prepareStatement("SELECT * FROM phonebook WHERE UPPER(name) LIKE UPPER(CONCAT('%', ?, '%') ) AND NUMBER LIKE CONCAT('%', ?, '%')");
+			prep.setString(1, e.name);
+			prep.setString(2, e.phoneNum);
 			ResultSet rs = prep.executeQuery();
 
 			while(rs.next()) 
@@ -134,7 +128,7 @@ public class DBMan
 	}
 	/**
 	 * Method for helping test Insert
-	 * @return
+	 * @return ResultSet set of results retrieved from database
 	 */
 	public ResultSet getAllEntries()
 	{

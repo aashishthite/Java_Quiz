@@ -2,7 +2,7 @@ package quiz.serverTest;
 
 import static org.junit.Assert.*;
 
-import java.sql.PreparedStatement;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -22,9 +22,8 @@ public class DBTest {
 	@Test
 	public void testAddEntry2DB() {
 		DBMan dbManager = new DBMan();
-		dbManager.addEntry2DB(new Entry("MyName","MyNumber"));
-		try 
-		{	
+		try {
+			dbManager.addEntry2DB(new Entry("MyName","MyNumber"));
 			ResultSet rs = dbManager.getAllEntries();
 			if(rs.next())
 			{
@@ -40,20 +39,31 @@ public class DBTest {
 	}
 
 	@Test
-	public void testSearchEntry() {
+	public void testSearchEntry()  {
 		DBMan dbManager = new DBMan();
-		dbManager.addEntry2DB(new Entry("John Doe","1242354235"));
-		dbManager.addEntry2DB(new Entry("Johnathan Jones","1543512356"));
-		dbManager.addEntry2DB(new Entry("Robert Johnathan Smith","1242354235"));
-		dbManager.addEntry2DB(new Entry("Aashish Thite","981750198575"));
-		List<Entry> returnedList= dbManager.SearchEntry(new Entry("JoHn",""));
-		assertEquals(returnedList.size(),3);
-		returnedList= dbManager.SearchEntry(new Entry("jOhN",""));
-		assertEquals(returnedList.size(),3);
-		returnedList= dbManager.SearchEntry(new Entry("","2"));
-		assertEquals(returnedList.size(),3);
-		returnedList= dbManager.SearchEntry(new Entry("","985"));
-		assertEquals(returnedList.size(),1);
+		
+		try {
+			dbManager.addEntry2DB(new Entry("John Doe","1242354235"));
+			dbManager.addEntry2DB(new Entry("Johnathan Jones","1543512356"));
+			dbManager.addEntry2DB(new Entry("Robert Johnathan Smith","1242354235"));
+			dbManager.addEntry2DB(new Entry("Aashish Thite","981750198575"));
+			dbManager.addEntry2DB(new Entry("Mike'O Donnel","9999999999"));
+			List<Entry> returnedList= dbManager.SearchEntry(new Entry("JoHn",""));
+			assertEquals(returnedList.size(),3);
+			returnedList= dbManager.SearchEntry(new Entry("jOhN",""));
+			assertEquals(returnedList.size(),3);
+			returnedList= dbManager.SearchEntry(new Entry("","2"));
+			assertEquals(returnedList.size(),3);
+			returnedList= dbManager.SearchEntry(new Entry("","985"));
+			assertEquals(returnedList.size(),1);
+			returnedList= dbManager.SearchEntry(new Entry("'",""));
+			assertEquals(returnedList.size(),1);
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 }

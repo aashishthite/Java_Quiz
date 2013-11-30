@@ -20,7 +20,8 @@ public class Comm implements Runnable {
 	//Receive memory buffer for Communication
 	public byte[] rx_buff = new byte[300];
 	public byte currentData;
-	public boolean dataReceived;    
+	public boolean dataReceived;
+	public boolean ack;
 	Protocol protocol;
 	DatagramSocket clientReceiver, serverReceiver;
 	public Entry receivedEntry;
@@ -127,6 +128,15 @@ public class Comm implements Runnable {
 
 				dataReceived = true;			    	
 				currentData = rx_buff[1];
+				if(currentData == 3)
+				{
+					if(rx_buff[2] == 1)
+					{
+						ack = true;
+					}
+					else
+						ack = false;
+				}
 				if(currentData==4||currentData==5)
 				{			    		 
 					char[] name = new char[rx_buff[2]];

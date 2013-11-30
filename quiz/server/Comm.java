@@ -76,6 +76,7 @@ public class Comm implements Runnable {
     	Data data = new DataAck(posNeg);
     	protocol = new Protocol(3,data);
     	sendData2Client(protocol.getFrame());
+    	
     }
     /**
      * Send an error to client
